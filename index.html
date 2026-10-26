@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Santiago Oculto: tours en movilidad activa, rutas gastronómicas y experiencias nocturnas guiadas por los barrios de Santiago de Chile.">
+<meta name="color-scheme" content="light dark">
+<title>Santiago Oculto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+html{color-scheme:light}
+
+/* Concepto: una sola página que avanza como el día en la ciudad (mañana, tarde, noche),
+   con la cordillera de Santiago como firma visual y mapa de barrios con coordenadas reales. */
+:root {
+  --bg: #f4f6f3; --surface: #ffffff; --fg: #15222b; --muted: #4f5f69; --line: #d6ddd8;
+  --accent: #1f7a5a; --accent-fg: #ffffff; --accent-soft: #e0efe8;
+  --sky-top: #cfe5ee; --sky-bot: #f4f6f3;
+  --m-far: #b9cfda; --m-mid: #8fb2b3; --m-near: #2d6a56; --snow: #ffffff;
+  --dia-bg: #d9eaf2; --dia-fg: #12303f; --dia-accent: #0f5f86;
+  --tarde-bg: #f6d9b8; --tarde-fg: #3a1f0e; --tarde-accent: #9a4310;
+  --noche-bg: #1f2354; --noche-fg: #eef0ff; --noche-accent: #b9c2ff;
+  --font-display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1a1f; --surface: #172830; --fg: #e8eeea; --muted: #9fb2b8; --line: #2a3c45;
+    --accent: #4fc79a; --accent-fg: #08231a; --accent-soft: #163329;
+    --sky-top: #0f1a1f; --sky-bot: #1b2d4c;
+    --m-far: #2b4062; --m-mid: #213450; --m-near: #14312c; --snow: #6f86ad;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1a1f; --surface: #172830; --fg: #e8eeea; --muted: #9fb2b8; --line: #2a3c45;
+  --accent: #4fc79a; --accent-fg: #08231a; --accent-soft: #163329;
+  --sky-top: #0f1a1f; --sky-bot: #1b2d4c;
+  --m-far: #2b4062; --m-mid: #213450; --m-near: #14312c; --snow: #6f86ad;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 17px; line-height: 1.6;
+  padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+.wrap { max-width: 1080px; margin-inline: auto; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.05; text-wrap: balance; margin: 0; letter-spacing: -0.015em; }
+h2 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); font-weight: 800; }
+h3 { font-size: 1.45rem; font-weight: 800; }
+p { margin: 0; max-width: 65ch; }
+a { color: inherit; }
+.mono { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+/* Cabecera */
+.top { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; justify-content: space-between; padding-block: 18px; }
+.brand { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; text-decoration: none; letter-spacing: -0.01em; }
+.brand span { color: var(--accent); }
+nav { display: flex; flex-wrap: wrap; gap: 6px 22px; font-weight: 500; font-size: 0.95rem; }
+nav a { text-decoration: none; color: var(--muted); padding-block: 4px; }
+nav a:hover { color: var(--fg); }
+
+/* Hero */
+.hero { position: relative; border-radius: 22px; overflow: hidden; background: linear-gradient(var(--sky-top), var(--sky-bot)); }
+.hero-copy { position: relative; z-index: 2; padding: clamp(28px, 6vw, 64px) clamp(20px, 5vw, 56px) clamp(120px, 20vw, 210px); }
+.hero h1 { font-size: clamp(2.5rem, 8vw, 5.4rem); font-weight: 800; max-width: 12ch; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero p.lead { margin-top: 18px; font-size: clamp(1.05rem, 2.2vw, 1.25rem); max-width: 46ch; color: var(--fg); }
+.coords { margin-top: 22px; color: var(--muted); }
+.btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.btn { display: inline-flex; align-items: center; min-height: 48px; padding: 0 22px; border-radius: 999px; font-weight: 600; text-decoration: none; border: 2px solid var(--accent); cursor: pointer; font: inherit; font-weight: 600; }
+.btn.primary { background: var(--accent); color: var(--accent-fg); }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+.btn:hover { transform: translateY(-1px); }
+.skyline { position: absolute; inset: auto 0 0 0; width: 100%; height: clamp(150px, 26vw, 280px); z-index: 1; display: block; }
+
+/* Secciones */
+section { padding-block: clamp(48px, 8vw, 96px) 0; }
+.kicker { color: var(--accent); margin-bottom: 12px; }
+.intro { margin-top: 14px; color: var(--muted); }
+
+/* Experiencias */
+.exps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 34px; }
+.exp { border-radius: 20px; padding: 26px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.exp .when { display: flex; justify-content: space-between; gap: 10px; }
+.exp p { font-size: 1rem; }
+.exp ul { margin: 4px 0 0; padding-left: 1.1em; font-size: 0.97rem; }
+.exp li { margin-block: 4px; }
+.exp.dia { background: var(--dia-bg); color: var(--dia-fg); }
+.exp.dia .when { color: var(--dia-accent); }
+.exp.tarde { background: var(--tarde-bg); color: var(--tarde-fg); }
+.exp.tarde .when { color: var(--tarde-accent); }
+.exp.noche { background: var(--noche-bg); color: var(--noche-fg); }
+.exp.noche .when { color: var(--noche-accent); }
+
+/* Barrios */
+.barrios { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 34px; border-block: 1px solid var(--line); }
+.barrio { padding: 26px 24px 28px 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.barrio + .barrio { padding-left: 24px; border-left: 1px solid var(--line); }
+.barrio .mono { color: var(--accent); }
+.barrio p { color: var(--muted); font-size: 0.98rem; }
+
+/* Cómo funciona */
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 34px; counter-reset: paso; padding: 0; list-style: none; }
+.steps li { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 24px; counter-increment: paso; min-width: 0; }
+.steps li::before { content: "Paso " counter(paso); display: block; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+.steps h3 { font-size: 1.2rem; margin-bottom: 8px; }
+.steps p { color: var(--muted); font-size: 0.97rem; }
+
+/* Planificador */
+.planner { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: clamp(20px, 4vw, 40px); margin-top: 30px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; }
+fieldset { border: 0; padding: 0; margin: 0 0 22px; min-width: 0; }
+legend { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: 0; margin-bottom: 10px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip span { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 2px solid var(--line); font-weight: 600; cursor: pointer; background: var(--bg); }
+.chip input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.chip input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 3px; }
+select { font: inherit; min-height: 44px; padding: 0 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--bg); color: var(--fg); width: 100%; max-width: 320px; }
+.stepper { display: inline-flex; align-items: center; border: 2px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--bg); }
+.stepper button { width: 44px; height: 44px; border: 0; background: transparent; color: var(--fg); font-size: 1.3rem; cursor: pointer; }
+.stepper output { min-width: 48px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+.plan { background: var(--accent-soft); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.plan h3 { font-size: 1.2rem; }
+.plan ol { margin: 0; padding-left: 1.2em; }
+.plan li { margin-block: 6px; }
+.plan .note { font-size: 0.88rem; color: var(--muted); }
+.copied { font-size: 0.9rem; color: var(--accent); min-height: 1.4em; }
+
+/* Valores y hoteles */
+.valores { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.valores span { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 8px 18px; font-weight: 500; }
+.b2b { margin-top: 34px; background: var(--accent); color: var(--accent-fg); border-radius: 22px; padding: clamp(24px, 5vw, 48px); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: center; }
+.b2b p { color: inherit; opacity: 0.95; }
+
+footer { margin-top: 72px; padding-block: 28px 40px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; color: var(--muted); font-size: 0.92rem; }
+
+@media (max-width: 860px) {
+  .exps, .steps { grid-template-columns: 1fr; }
+  .barrios { grid-template-columns: 1fr; }
+  .barrio, .barrio + .barrio { padding: 22px 0; border-left: 0; }
+  .barrio + .barrio { border-top: 1px solid var(--line); }
+  .planner, .b2b { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn:hover { transform: none; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#inicio">Santiago <span>Oculto</span></a>
+    <nav aria-label="Principal">
+      <a href="#experiencias">Experiencias</a>
+      <a href="#barrios">Barrios</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#arma-tu-recorrido">Arma tu recorrido</a>
+      <a href="#hoteles">Hoteles</a>
+    </nav>
+  </header>
+
+  <main id="inicio">
+    <div class="hero">
+      <div class="hero-copy">
+        <p class="mono kicker">Turismo inmersivo y movilidad sustentable</p>
+        <h1>Santiago, lejos de la <em>ruta de siempre</em>.</h1>
+        <p class="lead">Recorremos Lastarria, Barrio Italia y Bellavista a ritmo humano, con guías bilingües, comercio local y una sola reserva para el día, la tarde y la noche.</p>
+        <p class="mono coords">33°27′ S · 70°39′ O · Región Metropolitana, Chile</p>
+        <div class="btns">
+          <a class="btn primary" href="#arma-tu-recorrido">Arma tu recorrido</a>
+          <a class="btn ghost" href="#experiencias">Ver experiencias</a>
+        </div>
+      </div>
+      <svg class="skyline" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+        <path fill="var(--m-far)" d="M0 300V190l90-60 60 40 90-80 70 60 90-40 70 60 90-100 80 70 80-40 80 60 100-65 90 55 90-30 120 60v180z"/>
+        <path fill="var(--snow)" opacity="0.85" d="M240 90l22 18-14 8-12-10-10 8zM560 70l24 22-16 10-10-8-12 8zM900 95l20 17-12 8-10-8-10 7z"/>
+        <path fill="var(--m-mid)" d="M0 300V235l120-40 120 30 130-45 140 40 160-35 150 40 140-30 140 25v115z"/>
+        <path fill="var(--m-near)" d="M0 300v-52c150-8 250-38 330-58 50-12 70-12 110 0 80 25 260 60 460 55 150-4 230-15 300-10v65z"/>
+        <path fill="var(--m-near)" d="M382 176l3-12 3 12z"/>
+        <circle cx="385" cy="161" r="2.6" fill="var(--m-near)"/>
+      </svg>
+    </div>
+
+    <section id="experiencias" aria-labelledby="t-exp">
+      <p class="mono kicker">Tres momentos, una reserva</p>
+      <h2 id="t-exp">El mismo barrio cambia según la hora</h2>
+      <p class="intro">Cada experiencia sigue una ruta pensada para mirar de cerca lo que los circuitos masivos pasan de largo.</p>
+      <div class="exps">
+        <article class="exp dia">
+          <div class="when mono"><span>Día</span><span>Movilidad activa</span></div>
+          <h3>Ritmo humano</h3>
+          <p>Un recorrido activo por los barrios históricos con vehículos limpios y no motorizados, sin buses cerrados ni filas.</p>
+          <ul><li>Guía experto bilingüe</li><li>Patios, murales y calles que no salen en el mapa turístico</li><li>Traslado incluido entre paradas</li></ul>
+        </article>
+        <article class="exp tarde">
+          <div class="when mono"><span>Tarde</span><span>Inmersión cultural</span></div>
+          <h3>Mesa de barrio</h3>
+          <p>Una ruta gastronómica que pasa por cocinas, cafeterías y bares de siempre, con locatarios que son parte del proyecto.</p>
+          <ul><li>Paradas en comercios asociados</li><li>Esquema de comisiones compartidas con cada local</li><li>Historias del barrio contadas por quien lo vive</li></ul>
+        </article>
+        <article class="exp noche">
+          <div class="when mono"><span>Noche</span><span>Seguridad sin fricción</span></div>
+          <h3>Con guía, de noche</h3>
+          <p>Una experiencia nocturna acompañada, con ruta definida y protocolos de seguridad, para disfrutar la bohemia sin preocuparte por el trayecto.</p>
+          <ul><li>Ruta y horarios coordinados</li><li>Guía durante todo el recorrido</li><li>Cultura nocturna local en Bellavista y Lastarria</li></ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="barrios" aria-labelledby="t-bar">
+      <p class="mono kicker">Dónde pedaleamos</p>
+      <h2 id="t-bar">Tres barrios, tres maneras de entender Santiago</h2>
+      <div class="barrios">
+        <div class="barrio">
+          <span class="mono">33°26′ S · 70°38′ O</span>
+          <h3>Lastarria</h3>
+          <p>Calles empedradas, cafés, librerías y plazas pequeñas a pasos del Cerro Santa Lucía.</p>
+        </div>
+        <div class="barrio">
+          <span class="mono">33°27′ S · 70°38′ O</span>
+          <h3>Barrio Italia</h3>
+          <p>Talleres de diseño, anticuarios y pasajes de casas bajas donde todavía se trabaja con las manos.</p>
+        </div>
+        <div class="barrio">
+          <span class="mono">33°26′ S · 70°38′ O</span>
+          <h3>Bellavista</h3>
+          <p>Murales, teatros y vida nocturna a los pies del Cerro San Cristóbal, con la casa La Chascona de Pablo Neruda cerca.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="como-funciona" aria-labelledby="t-como">
+      <p class="mono kicker">Sin fricción</p>
+      <h2 id="t-como">Cómo funciona</h2>
+      <ol class="steps">
+        <li><h3>Reserva en la app</h3><p>Elige experiencia, barrio e idioma desde la App Santiago Oculto. Todo en un solo lugar, con pago internacional.</p></li>
+        <li><h3>Encuentra a tu guía</h3><p>Un guía bilingüe te recibe en el punto de encuentro y te presenta la ruta del día.</p></li>
+        <li><h3>Recorre y apoya lo local</h3><p>Cada parada es un comercio del barrio. Lo que consumes y lo que reservas queda en la comunidad.</p></li>
+      </ol>
+    </section>
+
+    <section id="arma-tu-recorrido" aria-labelledby="t-plan">
+      <p class="mono kicker">Prueba el concepto</p>
+      <h2 id="t-plan">Arma tu recorrido</h2>
+      <p class="intro">Combina experiencias y copia el plan para compartirlo con tu grupo. Las reservas abren con el lanzamiento de la app.</p>
+      <div class="planner">
+        <form id="f" onsubmit="return false">
+          <fieldset>
+            <legend>Experiencias</legend>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" name="exp" value="dia" checked><span>Día · Ritmo humano</span></label>
+              <label class="chip"><input type="checkbox" name="exp" value="tarde"><span>Tarde · Mesa de barrio</span></label>
+              <label class="chip"><input type="checkbox" name="exp" value="noche"><span>Noche · Con guía</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend><label for="barrio">Barrio base</label></legend>
+            <select id="barrio">
+              <option value="Lastarria">Lastarria</option>
+              <option value="Barrio Italia">Barrio Italia</option>
+              <option value="Bellavista">Bellavista</option>
+            </select>
+          </fieldset>
+          <fieldset>
+            <legend>Idioma del guía</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="lang" value="Español" checked><span>Español</span></label>
+              <label class="chip"><input type="radio" name="lang" value="English"><span>English</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Personas</legend>
+            <div class="stepper">
+              <button type="button" id="menos" aria-label="Menos personas">−</button>
+              <output id="n" aria-live="polite">2</output>
+              <button type="button" id="mas" aria-label="Más personas">+</button>
+            </div>
+          </fieldset>
+        </form>
+        <div class="plan" aria-live="polite">
+          <h3>Tu recorrido</h3>
+          <ol id="lista"></ol>
+          <p id="resumen" class="note"></p>
+          <button class="btn primary" type="button" id="copiar">Copiar plan</button>
+          <p class="copied" id="ok" role="status"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="hoteles" aria-labelledby="t-hot">
+      <p class="mono kicker">Triple impacto</p>
+      <h2 id="t-hot">Lo que nos guía</h2>
+      <div class="valores">
+        <span>Sustentabilidad</span><span>Autenticidad</span><span>Seguridad sin fricciones</span><span>Colaboración comunitaria</span><span>Comercio justo</span>
+      </div>
+      <div class="b2b">
+        <div>
+          <h3>Para hoteles boutique</h3>
+          <p style="margin-top:10px">Ofrece a tus huéspedes una experiencia local lista para reservar, con guías bilingües y rutas coordinadas por barrio. Trabajamos con alianzas directas con la hotelería de Santiago.</p>
+        </div>
+        <p>Santiago Oculto es un proyecto en desarrollo. Si tu alojamiento quiere ser parte de la primera etapa, esta es la forma de empezar la conversación cuando abramos el contacto.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Santiago Oculto · Turismo inmersivo y movilidad sustentable</span>
+    <span class="mono">Proyecto en desarrollo · Santiago de Chile</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var NOMBRES = { dia: 'Día · Ritmo humano: recorrido en movilidad activa', tarde: 'Tarde · Mesa de barrio: ruta gastronómica con locales', noche: 'Noche · Con guía: experiencia nocturna acompañada' };
+  var n = 2;
+  var $ = function (id) { return document.getElementById(id); };
+  var textoPlan = '';
+  function render() {
+    var exps = Array.prototype.slice.call(document.querySelectorAll('input[name=exp]:checked')).map(function (i) { return i.value; });
+    var lang = document.querySelector('input[name=lang]:checked').value;
+    var barrio = $('barrio').value;
+    var lista = $('lista');
+    lista.textContent = '';
+    if (!exps.length) {
+      var li = document.createElement('li'); li.textContent = 'Elige al menos una experiencia.'; lista.appendChild(li);
+      $('resumen').textContent = ''; textoPlan = ''; return;
+    }
+    exps.forEach(function (k) { var li = document.createElement('li'); li.textContent = NOMBRES[k]; lista.appendChild(li); });
+    var r = barrio + ' · guía en ' + lang + ' · ' + n + (n === 1 ? ' persona' : ' personas');
+    $('resumen').textContent = r + '. El precio se informará al abrir las reservas.';
+    textoPlan = 'Mi recorrido en Santiago Oculto\n' + exps.map(function (k, i) { return (i + 1) + '. ' + NOMBRES[k]; }).join('\n') + '\n' + r;
+  }
+  $('f').addEventListener('change', render);
+  $('menos').addEventListener('click', function () { n = Math.max(1, n - 1); $('n').textContent = n; render(); });
+  $('mas').addEventListener('click', function () { n = Math.min(20, n + 1); $('n').textContent = n; render(); });
+  $('copiar').addEventListener('click', function () {
+    if (!textoPlan) return;
+    var done = function (m) { $('ok').textContent = m; setTimeout(function () { $('ok').textContent = ''; }, 3000); };
+    try {
+      navigator.clipboard.writeText(textoPlan).then(function () { done('Plan copiado.'); }, function () { done('No se pudo copiar. Selecciona el texto manualmente.'); });
+    } catch (e) { done('No se pudo copiar. Selecciona el texto manualmente.'); }
+  });
+  render();
+})();
+</script>
+</body>
+</html>
